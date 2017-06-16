@@ -1,7 +1,17 @@
 #!/bin/bash
 
+if [ -n "$WIDTH" ]; then
+FULLSCREEN_WIDTH=$WIDTH
+else
 FULLSCREEN_WIDTH=640
+fi
+
+if [ -n "$HEIGHT" ]; then
+FULLSCREEN_HEIGHT=$HEIGHT
+else
 FULLSCREEN_HEIGHT=480
+fi
+
 _endx=$(($FULLSCREEN_WIDTH-1))
 _endy=$(($FULLSCREEN_HEIGHT-1))
 
@@ -27,7 +37,7 @@ ENCODER="x264enc bitrate=700 speed-preset=faster qp-min=30 tune=zerolatency"
 gst-launch-1.0 \
 videomixer name=vmix sink_1::xpos=${_cam_xpos} sink_1::ypos=${_cam_ypos} !\
 queue leaky=downstream ! ${ENCODER} ! \
-flvmux streamable=true name=mux ! ${STREAM_DESTINATION} \
+flvmux streamable=true name=mux ! ${FILE_DESTINATION} \
 audiomixer name=amix ! queue leaky=downstream ! voaacenc ! mux. \
 ximagesrc use-damage=0 endx=${_endx} endy=${_endy} ! \
 video/x-raw, framerate=30/1 ! \
